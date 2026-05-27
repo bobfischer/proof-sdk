@@ -47,6 +47,10 @@ async function main(): Promise<void> {
 
   app.use(express.json({ limit: '10mb' }));
   app.use(express.static(path.join(__dirname, '..', 'public')));
+  // Editor SPA bundle output: share-web-routes serves dist/index.html and
+  // rewrites "./assets/..." to "/assets/...". Without this mount, those
+  // requests 404 and the editor never boots in a browser.
+  app.use('/assets', express.static(path.join(__dirname, '..', 'dist', 'assets')));
 
   app.use((req, res, next) => {
     const originHeader = req.header('origin');
